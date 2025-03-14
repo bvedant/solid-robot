@@ -16,3 +16,7 @@ def analyze_sentiment(input: Text):
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
