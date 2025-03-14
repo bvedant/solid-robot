@@ -1,10 +1,16 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from transformers import pipeline
+from transformers import pipeline, AutoModelForSequenceClassification, AutoTokenizer
+import os
 
 app = FastAPI()
 
-sentiment_pipeline = pipeline("sentiment-analysis")
+MODEL_NAME = os.getenv("MODEL_NAME", "distilbert-base-uncased-finetuned-sst-2-english")
+REVISION = os.getenv("REVISION", "main")
+
+model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, revision=REVISION)
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, revision=REVISION)
+sentiment_pipeline = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
 
 class Text(BaseModel):
     text: str
